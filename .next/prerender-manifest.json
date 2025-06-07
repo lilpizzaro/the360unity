@@ -1,54 +1,6 @@
 {
   "version": 4,
   "routes": {
-    "/forum/new": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "Next-Action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/forum/new",
-      "dataRoute": "/forum/new.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
-    "/admin/setup": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "Next-Action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/admin/setup",
-      "dataRoute": "/admin/setup.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
     "/forum": {
       "experimentalBypassFor": [
         {
@@ -64,6 +16,30 @@
       "initialRevalidateSeconds": false,
       "srcRoute": "/forum",
       "dataRoute": "/forum.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    },
+    "/forum/new": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "Next-Action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/forum/new",
+      "dataRoute": "/forum/new.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -121,30 +97,6 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/dashboard": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "Next-Action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/dashboard",
-      "dataRoute": "/dashboard.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
     "/projects": {
       "experimentalBypassFor": [
         {
@@ -160,6 +112,30 @@
       "initialRevalidateSeconds": false,
       "srcRoute": "/projects",
       "dataRoute": "/projects.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    },
+    "/projects/new": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "Next-Action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/projects/new",
+      "dataRoute": "/projects/new.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -193,7 +169,7 @@
         "x-next-revalidate-tag-token"
       ]
     },
-    "/projects/new": {
+    "/dashboard": {
       "experimentalBypassFor": [
         {
           "type": "header",
@@ -206,8 +182,32 @@
         }
       ],
       "initialRevalidateSeconds": false,
-      "srcRoute": "/projects/new",
-      "dataRoute": "/projects/new.rsc",
+      "srcRoute": "/dashboard",
+      "dataRoute": "/dashboard.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    },
+    "/admin/setup": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "Next-Action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/admin/setup",
+      "dataRoute": "/admin/setup.rsc",
       "allowHeader": [
         "host",
         "x-matched-path",
@@ -221,8 +221,8 @@
   "dynamicRoutes": {},
   "notFoundRoutes": [],
   "preview": {
-    "previewModeId": "377cd7a8f92b17fa4f09b571e8030b14",
-    "previewModeSigningKey": "384c519cff24bc285073b1fb41815c87e6b59c0b012e9b81b39d8ac51e007b90",
-    "previewModeEncryptionKey": "8189da00d48cd199e6dfc4d4a6d934f42937a0da7cf3c8a018954aec11bd6697"
+    "previewModeId": "32baf9419ed8adbb3c1810cf72ea7f0a",
+    "previewModeSigningKey": "3faa5189451f01b489cab50ad0216581a757c2b74b8c90b9c9703d7ace287228",
+    "previewModeEncryptionKey": "db40effbbbb9cdf165705ed076dd8ffe8744dc17b7db4b27f1ef47c72f2685c6"
   }
 }

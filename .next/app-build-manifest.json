@@ -25,13 +25,6 @@
       "static/chunks/main-app-75613404d3cbae8c.js",
       "static/chunks/app/api/forum/comments/route-24e4440fecd836ab.js"
     ],
-    "/api/projects/[id]/route": [
-      "static/chunks/webpack-00becbc1d00785a4.js",
-      "static/chunks/4bd1b696-12938a1440995c23.js",
-      "static/chunks/684-b375e3c6388e88bb.js",
-      "static/chunks/main-app-75613404d3cbae8c.js",
-      "static/chunks/app/api/projects/[id]/route-d7af0697a27760f6.js"
-    ],
     "/api/collaboration/stats/route": [
       "static/chunks/webpack-00becbc1d00785a4.js",
       "static/chunks/4bd1b696-12938a1440995c23.js",
@@ -46,19 +39,12 @@
       "static/chunks/main-app-75613404d3cbae8c.js",
       "static/chunks/app/api/projects/files/route-e1b21a2a7bf63034.js"
     ],
-    "/api/forum/route": [
+    "/api/projects/[id]/route": [
       "static/chunks/webpack-00becbc1d00785a4.js",
       "static/chunks/4bd1b696-12938a1440995c23.js",
       "static/chunks/684-b375e3c6388e88bb.js",
       "static/chunks/main-app-75613404d3cbae8c.js",
-      "static/chunks/app/api/forum/route-272f6d2257a73630.js"
-    ],
-    "/api/setup-collab/route": [
-      "static/chunks/webpack-00becbc1d00785a4.js",
-      "static/chunks/4bd1b696-12938a1440995c23.js",
-      "static/chunks/684-b375e3c6388e88bb.js",
-      "static/chunks/main-app-75613404d3cbae8c.js",
-      "static/chunks/app/api/setup-collab/route-b6a9a946db7b7e2d.js"
+      "static/chunks/app/api/projects/[id]/route-d7af0697a27760f6.js"
     ],
     "/api/projects/route": [
       "static/chunks/webpack-00becbc1d00785a4.js",
@@ -74,13 +60,19 @@
       "static/chunks/main-app-75613404d3cbae8c.js",
       "static/chunks/app/api/update-profile/route-69938c6cfcced622.js"
     ],
-    "/api/auth/[...nextauth]/route": [
+    "/api/setup-collab/route": [
       "static/chunks/webpack-00becbc1d00785a4.js",
       "static/chunks/4bd1b696-12938a1440995c23.js",
       "static/chunks/684-b375e3c6388e88bb.js",
       "static/chunks/main-app-75613404d3cbae8c.js",
-      "static/chunks/788-17e129c78e9eff77.js",
-      "static/chunks/app/api/auth/[...nextauth]/route-7decd8f868f4261a.js"
+      "static/chunks/app/api/setup-collab/route-b6a9a946db7b7e2d.js"
+    ],
+    "/api/forum/route": [
+      "static/chunks/webpack-00becbc1d00785a4.js",
+      "static/chunks/4bd1b696-12938a1440995c23.js",
+      "static/chunks/684-b375e3c6388e88bb.js",
+      "static/chunks/main-app-75613404d3cbae8c.js",
+      "static/chunks/app/api/forum/route-272f6d2257a73630.js"
     ],
     "/(dashboard)/admin/setup/page": [
       "static/chunks/webpack-00becbc1d00785a4.js",
@@ -129,7 +121,7 @@
       "static/chunks/95-d1e3d372989535f8.js",
       "static/chunks/app/(dashboard)/forum/new/page-f0456080c4c50b0e.js"
     ],
-    "/(dashboard)/forum/page": [
+    "/(dashboard)/forum/[id]/page": [
       "static/chunks/webpack-00becbc1d00785a4.js",
       "static/chunks/4bd1b696-12938a1440995c23.js",
       "static/chunks/684-b375e3c6388e88bb.js",
@@ -138,18 +130,7 @@
       "static/chunks/674-acdbcedd2825abae.js",
       "static/chunks/874-3735e7ffbb9a9182.js",
       "static/chunks/95-d1e3d372989535f8.js",
-      "static/chunks/app/(dashboard)/forum/page-40c042728bcbd4c6.js"
-    ],
-    "/(dashboard)/profile/page": [
-      "static/chunks/webpack-00becbc1d00785a4.js",
-      "static/chunks/4bd1b696-12938a1440995c23.js",
-      "static/chunks/684-b375e3c6388e88bb.js",
-      "static/chunks/main-app-75613404d3cbae8c.js",
-      "static/chunks/788-17e129c78e9eff77.js",
-      "static/chunks/674-acdbcedd2825abae.js",
-      "static/chunks/874-3735e7ffbb9a9182.js",
-      "static/chunks/95-d1e3d372989535f8.js",
-      "static/chunks/app/(dashboard)/profile/page-eb25451d6a0b2eae.js"
+      "static/chunks/app/(dashboard)/forum/[id]/page-6248b5800fbd846d.js"
     ],
     "/(dashboard)/projects/[id]/page": [
       "static/chunks/webpack-00becbc1d00785a4.js",
@@ -162,6 +143,42 @@
       "static/chunks/277-b4c1a060303f8e58.js",
       "static/chunks/95-d1e3d372989535f8.js",
       "static/chunks/app/(dashboard)/projects/[id]/page-820287983b0f4210.js"
+    ],
+    "/(dashboard)/profile/page": [
+      "static/chunks/webpack-00becbc1d00785a4.js",
+      "static/chunks/4bd1b696-12938a1440995c23.js",
+      "static/chunks/684-b375e3c6388e88bb.js",
+      "static/chunks/main-app-75613404d3cbae8c.js",
+      "static/chunks/788-17e129c78e9eff77.js",
+      "static/chunks/674-acdbcedd2825abae.js",
+      "static/chunks/874-3735e7ffbb9a9182.js",
+      "static/chunks/95-d1e3d372989535f8.js",
+      "static/chunks/app/(dashboard)/profile/page-eb25451d6a0b2eae.js"
+    ],
+    "/(dashboard)/showcase/page": [
+      "static/chunks/webpack-00becbc1d00785a4.js",
+      "static/chunks/4bd1b696-12938a1440995c23.js",
+      "static/chunks/684-b375e3c6388e88bb.js",
+      "static/chunks/main-app-75613404d3cbae8c.js",
+      "static/chunks/788-17e129c78e9eff77.js",
+      "static/chunks/674-acdbcedd2825abae.js",
+      "static/chunks/874-3735e7ffbb9a9182.js",
+      "static/chunks/212-c3738509847f26e9.js",
+      "static/chunks/671-577d48b868b1c968.js",
+      "static/chunks/95-d1e3d372989535f8.js",
+      "static/chunks/306-989954ea96f3a805.js",
+      "static/chunks/app/(dashboard)/showcase/page-017082aec599fc26.js"
+    ],
+    "/(dashboard)/forum/page": [
+      "static/chunks/webpack-00becbc1d00785a4.js",
+      "static/chunks/4bd1b696-12938a1440995c23.js",
+      "static/chunks/684-b375e3c6388e88bb.js",
+      "static/chunks/main-app-75613404d3cbae8c.js",
+      "static/chunks/788-17e129c78e9eff77.js",
+      "static/chunks/674-acdbcedd2825abae.js",
+      "static/chunks/874-3735e7ffbb9a9182.js",
+      "static/chunks/95-d1e3d372989535f8.js",
+      "static/chunks/app/(dashboard)/forum/page-40c042728bcbd4c6.js"
     ],
     "/(dashboard)/projects/new/page": [
       "static/chunks/webpack-00becbc1d00785a4.js",
@@ -189,7 +206,15 @@
       "static/chunks/95-d1e3d372989535f8.js",
       "static/chunks/app/(dashboard)/projects/page-5db16d117a8cd84d.js"
     ],
-    "/(dashboard)/showcase/page": [
+    "/page": [
+      "static/chunks/webpack-00becbc1d00785a4.js",
+      "static/chunks/4bd1b696-12938a1440995c23.js",
+      "static/chunks/684-b375e3c6388e88bb.js",
+      "static/chunks/main-app-75613404d3cbae8c.js",
+      "static/chunks/874-3735e7ffbb9a9182.js",
+      "static/chunks/app/page-f6aae898ff3fefdc.js"
+    ],
+    "/sign-up/[[...sign-up]]/page": [
       "static/chunks/webpack-00becbc1d00785a4.js",
       "static/chunks/4bd1b696-12938a1440995c23.js",
       "static/chunks/684-b375e3c6388e88bb.js",
@@ -197,11 +222,7 @@
       "static/chunks/788-17e129c78e9eff77.js",
       "static/chunks/674-acdbcedd2825abae.js",
       "static/chunks/874-3735e7ffbb9a9182.js",
-      "static/chunks/212-c3738509847f26e9.js",
-      "static/chunks/671-577d48b868b1c968.js",
-      "static/chunks/95-d1e3d372989535f8.js",
-      "static/chunks/306-989954ea96f3a805.js",
-      "static/chunks/app/(dashboard)/showcase/page-017082aec599fc26.js"
+      "static/chunks/app/sign-up/[[...sign-up]]/page-03e6429568892256.js"
     ],
     "/sign-in/[[...sign-in]]/page": [
       "static/chunks/webpack-00becbc1d00785a4.js",
@@ -213,34 +234,13 @@
       "static/chunks/874-3735e7ffbb9a9182.js",
       "static/chunks/app/sign-in/[[...sign-in]]/page-fe8b68b6dafb4254.js"
     ],
-    "/page": [
-      "static/chunks/webpack-00becbc1d00785a4.js",
-      "static/chunks/4bd1b696-12938a1440995c23.js",
-      "static/chunks/684-b375e3c6388e88bb.js",
-      "static/chunks/main-app-75613404d3cbae8c.js",
-      "static/chunks/874-3735e7ffbb9a9182.js",
-      "static/chunks/app/page-f6aae898ff3fefdc.js"
-    ],
-    "/(dashboard)/forum/[id]/page": [
+    "/api/auth/[...nextauth]/route": [
       "static/chunks/webpack-00becbc1d00785a4.js",
       "static/chunks/4bd1b696-12938a1440995c23.js",
       "static/chunks/684-b375e3c6388e88bb.js",
       "static/chunks/main-app-75613404d3cbae8c.js",
       "static/chunks/788-17e129c78e9eff77.js",
-      "static/chunks/674-acdbcedd2825abae.js",
-      "static/chunks/874-3735e7ffbb9a9182.js",
-      "static/chunks/95-d1e3d372989535f8.js",
-      "static/chunks/app/(dashboard)/forum/[id]/page-6248b5800fbd846d.js"
-    ],
-    "/sign-up/[[...sign-up]]/page": [
-      "static/chunks/webpack-00becbc1d00785a4.js",
-      "static/chunks/4bd1b696-12938a1440995c23.js",
-      "static/chunks/684-b375e3c6388e88bb.js",
-      "static/chunks/main-app-75613404d3cbae8c.js",
-      "static/chunks/788-17e129c78e9eff77.js",
-      "static/chunks/674-acdbcedd2825abae.js",
-      "static/chunks/874-3735e7ffbb9a9182.js",
-      "static/chunks/app/sign-up/[[...sign-up]]/page-03e6429568892256.js"
+      "static/chunks/app/api/auth/[...nextauth]/route-7decd8f868f4261a.js"
     ]
   }
 }
