@@ -1,0 +1,1 @@
+"use strict";exports.id=349,exports.ids=[349],exports.modules={65591:(e,r,s)=>{s.d(r,{$v:()=>l});var t=s(10773),i=s(5020);let l=(0,t.c2)({apiKey:i.Lq,secretKey:i.rB,apiUrl:i.H$,apiVersion:i.mG,userAgent:"@clerk/nextjs@4.31.8",proxyUrl:i.Rg,domain:i.V2,isSatellite:i.fS})},88349:(e,r,s)=>{s.d(r,{clerkClient:()=>t.$v});var t=s(65591)}};
