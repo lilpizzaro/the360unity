@@ -1,0 +1,40 @@
+{
+  "version": 4,
+  "routes": {
+    "/api/collaboration/stats": {
+      "initialHeaders": {
+        "content-type": "application/json",
+        "x-next-cache-tags": "_N_T_/layout,_N_T_/api/layout,_N_T_/api/collaboration/layout,_N_T_/api/collaboration/stats/layout,_N_T_/api/collaboration/stats/route,_N_T_/api/collaboration/stats"
+      },
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "Next-Action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/api/collaboration/stats",
+      "dataRoute": null,
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
+    }
+  },
+  "dynamicRoutes": {},
+  "notFoundRoutes": [],
+  "preview": {
+    "previewModeId": "f9a8a3c1ba593c8e2a36318c73dd6bcf",
+    "previewModeSigningKey": "7ac05742eedccf3674a676b5fda3ee4a73767589045bc61f233281c5a9ae9447",
+    "previewModeEncryptionKey": "977f765f92df305ee9bf12240c413d2593f13afa2ce4f4314cb0237ff8eca332"
+  }
+}
