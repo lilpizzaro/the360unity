@@ -1,0 +1,326 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import Sohne fonts from same-assets.com */
+@font-face {
+  font-family: 'Sohne';
+  src: url('https://ext.same-assets.com/2047089042/1678816853.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sohne';
+  src: url('https://ext.same-assets.com/2047089042/2949151945.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sohne';
+  src: url('https://ext.same-assets.com/2047089042/3132641976.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --color-purple-primary: #632cfb;
+  --color-cyan-accent: #0df3f6;
+  --color-dark-bg: #221c35;
+  --color-purple-dark: #361a96;
+  --color-purple-light: #983ff0;
+  --color-purple-medium: #5f52ed;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: 'Sohne', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+  font-family: 'Sohne', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, #632cfb 0%, #361a96 50%, #271892 100%);
+  min-height: 100vh;
+  color: white;
+  overflow-x: hidden;
+}
+
+/* Dropdown styling */
+select {
+  background-color: rgba(0, 0, 0, 0.7) !important;
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+select option {
+  background-color: black !important;
+  color: white !important;
+}
+
+/* Background animation stars/particles effect */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: sparkle 20s linear infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes sparkle {
+  0% {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+}
+
+/* Typography classes matching Gamily */
+.t-heading-xl {
+  font-size: clamp(3rem, 8vw, 8rem);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+
+.t-heading-lg {
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.t-heading-md {
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.t-heading-sm {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.t-lg {
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.t-base {
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.t-caption {
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Cyan text accent */
+.text-cyan {
+  color: var(--color-cyan-accent);
+  text-shadow: 0 0 20px rgba(13, 243, 246, 0.5);
+}
+
+/* Button styles */
+.btn-primary {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 50px;
+  padding: 0.75rem 1.5rem;
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.btn-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-circle:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+/* Animation classes */
+.animate-text {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 1s ease forwards;
+}
+
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 1s ease forwards 0.5s;
+}
+
+.fade-in-delay-1 {
+  opacity: 0;
+  animation: fadeIn 1s ease forwards 0.7s;
+}
+
+.fade-in-delay-2 {
+  opacity: 0;
+  animation: fadeIn 1s ease forwards 0.9s;
+}
+
+.fade-in-delay-3 {
+  opacity: 0;
+  animation: fadeIn 1s ease forwards 1.1s;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Section spacing */
+.section {
+  min-height: 100vh;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Smooth scrolling navigation */
+.nav-link {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: var(--color-cyan-accent);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Float animation for mobile mockups */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.float-animation {
+  animation: float 6s ease-in-out infinite;
+}
+
+.float-animation-delay-1 {
+  animation: float 6s ease-in-out infinite 1s;
+}
+
+.float-animation-delay-2 {
+  animation: float 6s ease-in-out infinite 2s;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .section {
+    padding: 1rem;
+  }
+
+  .t-heading-xl {
+    font-size: clamp(2rem, 6vw, 4rem);
+  }
+
+  /* Better mobile layout for hero section */
+  .absolute.transform.-rotate-12,
+  .absolute.transform.rotate-12 {
+    display: none;
+  }
+
+  /* Center the main phone mockup */
+  .transform.translate-y-\[20px\] {
+    position: relative !important;
+    transform: scale(0.8) !important;
+    margin: 2rem auto;
+  }
+}
+
+@media (max-width: 480px) {
+  body::before {
+    background-size: 30px 30px;
+  }
+
+  .btn-primary {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.875rem;
+  }
+
+  .transform.translate-y-\[20px\] {
+    transform: scale(0.6) !important;
+  }
+}
