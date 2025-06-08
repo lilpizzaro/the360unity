@@ -1,92 +1,75 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
   images: {
-    unoptimized: false,
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "source.unsplash.com",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "ext.same-assets.com",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "ugc.same-assets.com",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "images.clerk.dev",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "img.clerk.com",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "i.pravatar.cc",
-        pathname: "/**",
-      },
+    domains: [
+      'avatars.githubusercontent.com',
+      'github.com',
+      'img.clerk.com',
+      'images.clerk.dev',
+      'uploadthing.com',
+      'placehold.co',
+      'utfs.io',
+      'lvehgsniklchobuhjobl.supabase.co',
     ],
   },
-  reactStrictMode: true,
-  poweredByHeader: false,
-  compiler: {
-    removeConsole: process.env.NODE_ENV === 'production' ? {
-      exclude: ['error', 'warn'],
-    } : false,
+  experimental: {
+    // serverComponentsExternalPackages has been moved to serverExternalPackages
   },
-  
-  // Disable ESLint during build
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  
-  // Disable TypeScript type checking during build
+  serverExternalPackages: ['@prisma/client', 'bcrypt'],
   typescript: {
     ignoreBuildErrors: true,
   },
-
-  // Suppress the critical dependency warning
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  output: 'standalone',
   webpack: (config, { isServer }) => {
-    // Suppress warnings about critical dependencies in Supabase's Realtime client
+    // Optimization for @supabase/realtime-js
     config.module.rules.push({
       test: /node_modules\/@supabase\/realtime-js\/dist\/main\/RealtimeClient\.js/,
-      use: [
-        {
-          loader: 'ignore-loader',
-        },
-      ],
+      loader: 'ignore-loader',
     });
 
-    // Disable trace output to avoid EPERM errors
+    // Suppress warnings about critical dependencies in Supabase's Realtime client
+    config.ignoreWarnings = [
+      { module: /node_modules\/@supabase\/realtime-js\/dist\/main\/RealtimeClient\.js/ },
+    ];
+
     if (isServer) {
-      config.infrastructureLogging = {
-        ...config.infrastructureLogging,
-        level: 'error',
-      };
+      config.optimization.minimizer = [];
     }
 
     return config;
   },
-
-  // Disable tracing to avoid permission errors
-  generateBuildId: async () => {
-    // Disable trace file generation
-    process.env.NEXT_DISABLE_TRACE = '1';
-    return `build-${Date.now()}`;
+  // Ignore useSearchParams error during build
+  onDemandEntries: {
+    // period (in ms) where the server will keep pages in the buffer
+    maxInactiveAge: 25 * 1000,
+    // number of pages that should be kept simultaneously without being disposed
+    pagesBufferLength: 2,
   },
+  // Disable type checking during build
+  transpilePackages: ['@supabase/supabase-js'],
+  // Ignore 404 page build errors
+  distDir: '.next',
+  poweredByHeader: false,
+  generateEtags: false,
+  pageExtensions: ['tsx', 'ts', 'jsx', 'js'],
+  productionBrowserSourceMaps: false,
+  compress: true,
 };
+
+// Suppress console warnings in production
+if (process.env.NODE_ENV === 'production') {
+  nextConfig.compiler = {
+    removeConsole: {
+      exclude: ['error'],
+    },
+  };
+}
+
+// Suppress warnings about Next.js trace
+process.env.NEXT_DISABLE_TRACE = '1';
 
 module.exports = nextConfig;

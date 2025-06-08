@@ -2,7 +2,12 @@ import { createClient } from '@supabase/supabase-js';
 
 // Use environment variables from .env.local
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const supabaseServiceRoleKey = process.env.SUPABASE_KEY || '';
+
+// Create Supabase client - use service role key for server-side API routes
+const isServer = typeof window === 'undefined';
+const supabaseKey = isServer ? supabaseServiceRoleKey : supabaseAnonKey;
 
 // Create Supabase client
 export const supabase = createClient(supabaseUrl, supabaseKey, {
@@ -19,8 +24,8 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
 
 // Storage configuration from environment variables
 export const storageConfig = {
-  accessKeyId: process.env.NEXT_PUBLIC_SUPABASE_STORAGE_ACCESS_KEY || '',
-  secretAccessKey: process.env.NEXT_PUBLIC_SUPABASE_STORAGE_SECRET_KEY || ''
+  accessKeyId: process.env.NEXT_PUBLIC_SUPABASE_STORAGE_ACCESS_KEY || process.env.SUPABASE_STORAGE_ACCESS_KEY_ID || '',
+  secretAccessKey: process.env.NEXT_PUBLIC_SUPABASE_STORAGE_SECRET_KEY || process.env.SUPABASE_STORAGE_SECRET_ACCESS_KEY || ''
 };
 
 // Storage helper functions

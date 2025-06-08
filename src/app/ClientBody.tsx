@@ -1,7 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
+
+// Create a separate component that uses searchParams
+function SearchParamsWatcher({ setIsChangingRoute }: { setIsChangingRoute: (value: boolean) => void }) {
+  const searchParams = useSearchParams();
+  
+  // Effect to notify parent when searchParams change
+  useEffect(() => {
+    setIsChangingRoute(true);
+    const timer = setTimeout(() => {
+      setIsChangingRoute(false);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchParams, setIsChangingRoute]);
+  
+  return null;
+}
 
 export default function ClientBody({
   children,
@@ -9,7 +25,6 @@ export default function ClientBody({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const [isChangingRoute, setIsChangingRoute] = useState(false);
 
   // Remove any extension-added attributes during hydration
@@ -57,7 +72,7 @@ export default function ClientBody({
     }, 300);
     
     return () => clearTimeout(timer);
-  }, [pathname, searchParams]);
+  }, [pathname]);
 
   // Show/hide loading screen on route changes
   useEffect(() => {
@@ -77,5 +92,12 @@ export default function ClientBody({
     }
   }, [isChangingRoute]);
 
-  return <div className="antialiased">{children}</div>;
+  return (
+    <div className="antialiased">
+      <Suspense fallback={null}>
+        <SearchParamsWatcher setIsChangingRoute={setIsChangingRoute} />
+      </Suspense>
+      {children}
+    </div>
+  );
 }
