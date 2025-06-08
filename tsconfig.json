@@ -28,7 +28,8 @@
       ]
     },
     "jsxImportSource": "bippy/dist",
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "strictNullChecks": true
   },
   "include": [
     "**/*.ts",

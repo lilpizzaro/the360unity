@@ -89,7 +89,7 @@ function example() {
       try {
         const sessionData: SessionData = JSON.parse(savedSession);
         setRoomId(sessionData.roomId);
-        setIsCollaborating(sessionData.isCollaborating);
+        setIsCollaborating(false); // Start with false until we verify the room exists
         setActiveUsers(sessionData.activeUsers);
         
         // Parse timestamps back to Date objects
@@ -109,11 +109,27 @@ function example() {
         console.log("Restored collaboration session");
         
         // Rejoin room if was collaborating
-        if (sessionData.isCollaborating && sessionData.roomId) {
-          fetchRoomData(sessionData.roomId);
+        if (sessionData.roomId) {
+          // Check if room still exists and rejoin
+          supabase
+            .from('collab_rooms')
+            .select('id')
+            .eq('id', sessionData.roomId)
+            .single()
+            .then(({ data, error }) => {
+              if (error || !data) {
+                console.error("Room no longer exists:", error);
+                localStorage.removeItem('collabSession');
+                return;
+              }
+              
+              // Room exists, rejoin it
+              fetchRoomData(sessionData.roomId);
+            });
         }
       } catch (error) {
         console.error("Failed to restore session:", error);
+        localStorage.removeItem('collabSession');
       }
     }
   }, []);
@@ -121,22 +137,26 @@ function example() {
   // Save session to localStorage whenever important state changes
   useEffect(() => {
     if (isCollaborating && roomId) {
-      const sessionData: SessionData = {
-        roomId,
-        isCollaborating,
-        username,
-        activeUsers,
-        chatMessages: chatMessages.map(msg => ({
-          ...msg,
-          timestamp: msg.timestamp.toISOString()
-        })),
-        code,
-        language,
-        outputResult
-      };
-      
-      localStorage.setItem('collabSession', JSON.stringify(sessionData));
-      console.log("Saved collaboration session");
+      try {
+        const sessionData: SessionData = {
+          roomId,
+          isCollaborating,
+          username,
+          activeUsers,
+          chatMessages: chatMessages.map(msg => ({
+            ...msg,
+            timestamp: msg.timestamp.toISOString()
+          })),
+          code,
+          language,
+          outputResult
+        };
+        
+        localStorage.setItem('collabSession', JSON.stringify(sessionData));
+        console.log("Saved collaboration session");
+      } catch (error) {
+        console.error("Failed to save session:", error);
+      }
     }
   }, [roomId, isCollaborating, activeUsers, chatMessages, code, language, outputResult, username]);
   
@@ -149,9 +169,13 @@ function example() {
 
   // Subscribe to Supabase real-time updates for a room
   useEffect(() => {
+    let codeSubscription: any = null;
+    let chatSubscription: any = null;
+    let usersSubscription: any = null;
+    
     if (isCollaborating && roomId && !realtimeSubscribed) {
       // Subscribe to code changes
-      const codeSubscription = supabase
+      codeSubscription = supabase
         .channel(`room:${roomId}:code`)
         .on('postgres_changes', { 
           event: 'UPDATE', 
@@ -169,7 +193,7 @@ function example() {
         .subscribe();
 
       // Subscribe to chat messages
-      const chatSubscription = supabase
+      chatSubscription = supabase
         .channel(`room:${roomId}:chat`)
         .on('postgres_changes', { 
           event: 'INSERT', 
@@ -188,7 +212,7 @@ function example() {
         .subscribe();
 
       // Subscribe to room users
-      const usersSubscription = supabase
+      usersSubscription = supabase
         .channel(`room:${roomId}:users`)
         .on('postgres_changes', { 
           event: '*', 
@@ -201,16 +225,28 @@ function example() {
         .subscribe();
 
       setRealtimeSubscribed(true);
-
-      // Cleanup subscriptions
-      return () => {
-        codeSubscription.unsubscribe();
-        chatSubscription.unsubscribe();
-        usersSubscription.unsubscribe();
-        setRealtimeSubscribed(false);
-      };
     }
+
+    // Cleanup subscriptions
+    return () => {
+      if (codeSubscription) codeSubscription.unsubscribe();
+      if (chatSubscription) chatSubscription.unsubscribe();
+      if (usersSubscription) usersSubscription.unsubscribe();
+      
+      // Only reset the flag if the component is unmounting
+      // Don't reset if just the dependencies changed
+      if (isCollaborating && roomId) {
+        setRealtimeSubscribed(false);
+      }
+    };
   }, [isCollaborating, roomId, user?.id]);
+
+  // Additional cleanup effect when leaving a room
+  useEffect(() => {
+    if (!isCollaborating) {
+      setRealtimeSubscribed(false);
+    }
+  }, [isCollaborating]);
 
   // Fetch room data from Supabase
   const fetchRoomData = async (roomId: string) => {
@@ -222,61 +258,71 @@ function example() {
         .eq('id', roomId)
         .single();
         
-      if (roomError) throw roomError;
+      if (roomError) {
+        console.error("Room error:", roomError);
+        throw new Error("Room not found or no longer exists");
+      }
       
-      if (roomData) {
-        setCode(roomData.code);
-        setLanguage(roomData.language);
-        setIsCollaborating(true);
-        
-        // Join the room
-        const { error: joinError } = await supabase
-          .from('collab_room_users')
-          .upsert({
-            room_id: roomId,
-            user_id: user?.id || 'anonymous',
-            username: username,
-            joined_at: new Date().toISOString()
-          });
-          
-        if (joinError) throw joinError;
-        
-        // Fetch room users
-        fetchRoomUsers();
-        
-        // Fetch chat messages
-        const { data: messagesData, error: messagesError } = await supabase
-          .from('collab_messages')
-          .select('*')
-          .eq('room_id', roomId)
-          .order('created_at', { ascending: true });
-          
-        if (messagesError) throw messagesError;
-        
-        if (messagesData) {
-          setChatMessages(messagesData.map(msg => ({
-            user: msg.username,
-            message: msg.message,
-            timestamp: new Date(msg.created_at)
-          })));
-        }
-        
-        // Add system message
-        const systemMessage = {
-          user: "System",
-          message: `You joined room ${roomId}`,
-          timestamp: new Date()
-        };
-        
-        setChatMessages(prev => [...prev, systemMessage]);
-      } else {
+      if (!roomData) {
         throw new Error("Room not found");
       }
+      
+      setCode(roomData.code);
+      setLanguage(roomData.language);
+      setIsCollaborating(true);
+      
+      // Join the room
+      const { error: joinError } = await supabase
+        .from('collab_room_users')
+        .upsert({
+          room_id: roomId,
+          user_id: user?.id || 'anonymous',
+          username: username,
+          joined_at: new Date().toISOString(),
+          last_active: new Date().toISOString()
+        });
+        
+      if (joinError) throw joinError;
+      
+      // Fetch room users
+      fetchRoomUsers();
+      
+      // Fetch chat messages
+      const { data: messagesData, error: messagesError } = await supabase
+        .from('collab_messages')
+        .select('*')
+        .eq('room_id', roomId)
+        .order('created_at', { ascending: true });
+        
+      if (messagesError) throw messagesError;
+      
+      if (messagesData) {
+        setChatMessages(messagesData.map(msg => ({
+          user: msg.username,
+          message: msg.message,
+          timestamp: new Date(msg.created_at)
+        })));
+      }
+      
+      // Add system message
+      const systemMessage = {
+        user: "System",
+        message: `You joined room ${roomId}`,
+        timestamp: new Date()
+      };
+      
+      setChatMessages(prev => [...prev, systemMessage]);
     } catch (error) {
       console.error("Error fetching room data:", error);
       alert("Error joining room. The room may not exist.");
       setIsJoining(false);
       setIsCollaborating(false);
+      
+      // Clear session data from localStorage when room doesn't exist
+      localStorage.removeItem('collabSession');
+      
+      // Reset room ID
+      setRoomId("");
     }
   };
   
@@ -303,8 +349,9 @@ function example() {
     setIsCreating(true);
     
     try {
-      // Create a new room ID
-      const newRoomId = `room-${Math.floor(Math.random() * 1000000)}`;
+      // Create a new room ID with timestamp for uniqueness
+      const timestamp = Date.now();
+      const newRoomId = `room-${timestamp}-${Math.floor(Math.random() * 1000)}`;
       
       // Create room in database
       const { error: roomError } = await supabase
@@ -316,7 +363,8 @@ function example() {
           created_by: user?.id || 'anonymous',
           created_at: new Date().toISOString(),
           updated_by: user?.id || 'anonymous',
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
+          is_active: true
         });
         
       if (roomError) throw roomError;
@@ -328,7 +376,8 @@ function example() {
           room_id: newRoomId,
           user_id: user?.id || 'anonymous',
           username: username,
-          joined_at: new Date().toISOString()
+          joined_at: new Date().toISOString(),
+          last_active: new Date().toISOString()
         });
         
       if (userError) throw userError;
@@ -512,6 +561,7 @@ function example() {
         }
       }
       
+      // Clean up state
       setIsCollaborating(false);
       setRoomId("");
       setActiveUsers([]);
@@ -521,6 +571,17 @@ function example() {
       
       // Clear session data from localStorage
       localStorage.removeItem('collabSession');
+      
+      // Reset code to default if user wants
+      if (confirm("Do you want to reset the code editor to default?")) {
+        setCode(`// Write your code here...
+function example() {
+  // Your code will appear here
+  return "Ready to code";
+}
+`);
+        setLanguage("javascript");
+      }
     }
   };
 

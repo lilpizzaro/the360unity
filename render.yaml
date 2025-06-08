@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: the360unity
+    env: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+    staticPublishPath: ./public
+    staticContentIndex: loading.html
+    staticErrorPage: loading.html
+    staticHeaders:
+      - path: /*
+        name: Cache-Control
+        value: no-cache 

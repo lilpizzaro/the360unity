@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loading THE360UNITY</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    #canvas-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+    
+    .container {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+    
+    .logo {
+      margin-bottom: 32px;
+      position: relative;
+      animation: fadeInDown 1s ease-out forwards;
+    }
+    
+    .logo h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: -0.5px;
+      color: white;
+      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+    }
+    
+    .loading-bar {
+      width: 288px;
+      height: 8px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+      margin: 0 auto 24px;
+      box-shadow: 0 0 15px rgba(34, 211, 238, 0.3);
+    }
+    
+    .loading-progress {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 30%;
+      background: linear-gradient(to right, #a855f7, #22d3ee, #3b82f6);
+      border-radius: 4px;
+      animation: loading 2s infinite cubic-bezier(0.4, 0.0, 0.2, 1);
+      box-shadow: 0 0 15px rgba(34, 211, 238, 0.6);
+    }
+    
+    .loading-text {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 1rem;
+      animation: pulse 2s infinite ease-in-out;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+    
+    .subtitle {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.875rem;
+      margin-top: 8px;
+      margin-bottom: 32px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    
+    @keyframes loading {
+      0% { width: 0%; left: 0%; }
+      50% { width: 100%; left: 0%; }
+      100% { width: 0%; left: 100%; }
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+    
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="canvas-container"></div>
+  
+  <div class="container">
+    <div class="logo">
+      <h1>THE360UNITY</h1>
+      <div class="subtitle">BY DEVELOPERS FOR DEVELOPERS</div>
+    </div>
+    
+    <div class="loading-bar">
+      <div class="loading-progress"></div>
+    </div>
+    
+    <p class="loading-text" id="loading-text">Initializing...</p>
+  </div>
+  
+  <script>
+    // Three.js 3D background
+    (function() {
+      // Initialize Three.js scene
+      const container = document.getElementById('canvas-container');
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setClearColor(0x000000, 0);
+      container.appendChild(renderer.domElement);
+      
+      // Create particles
+      const particlesGeometry = new THREE.BufferGeometry();
+      const particlesCount = 2000;
+      
+      const posArray = new Float32Array(particlesCount * 3);
+      
+      for(let i = 0; i < particlesCount * 3; i++) {
+        // Create a sphere of particles
+        posArray[i] = (Math.random() - 0.5) * 5;
+      }
+      
+      particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+      
+      // Create material
+      const particlesMaterial = new THREE.PointsMaterial({
+        size: 0.02,
+        color: 0x22d3ee,
+        transparent: true,
+        opacity: 0.8,
+        blending: THREE.AdditiveBlending
+      });
+      
+      // Create mesh
+      const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+      scene.add(particlesMesh);
+      
+      // Create a torus
+      const torusGeometry = new THREE.TorusGeometry(1, 0.3, 16, 100);
+      const torusMaterial = new THREE.MeshBasicMaterial({ 
+        color: 0x3b82f6,
+        transparent: true,
+        opacity: 0.2,
+        wireframe: true
+      });
+      const torus = new THREE.Mesh(torusGeometry, torusMaterial);
+      scene.add(torus);
+      
+      // Create a second torus at different angle
+      const torus2Geometry = new THREE.TorusGeometry(1.5, 0.2, 16, 100);
+      const torus2Material = new THREE.MeshBasicMaterial({ 
+        color: 0x8b5cf6,
+        transparent: true,
+        opacity: 0.15,
+        wireframe: true
+      });
+      const torus2 = new THREE.Mesh(torus2Geometry, torus2Material);
+      torus2.rotation.x = Math.PI / 4;
+      scene.add(torus2);
+      
+      // Position camera
+      camera.position.z = 3;
+      
+      // Animation
+      function animate() {
+        requestAnimationFrame(animate);
+        
+        particlesMesh.rotation.y += 0.001;
+        particlesMesh.rotation.x += 0.0005;
+        
+        torus.rotation.x += 0.01;
+        torus.rotation.y += 0.005;
+        
+        torus2.rotation.x += 0.005;
+        torus2.rotation.z += 0.008;
+        
+        renderer.render(scene, camera);
+      }
+      
+      // Handle window resize
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+      
+      animate();
+    })();
+    
+    // Update loading text periodically
+    const loadingTexts = ["Initializing...", "Loading resources...", "Preparing workspace...", "Loading the Unity..."];
+    let currentTextIndex = 0;
+    const loadingTextEl = document.getElementById('loading-text');
+    
+    setInterval(() => {
+      currentTextIndex = (currentTextIndex + 1) % loadingTexts.length;
+      loadingTextEl.textContent = loadingTexts[currentTextIndex];
+    }, 2000);
+    
+    // Redirect to the main app after a timeout
+    setTimeout(() => {
+      window.location.href = '/';
+    }, 30000); // 30 seconds timeout
+    
+    // Try to ping the app and redirect when it's available
+    function checkIfAppIsReady() {
+      fetch('/', { method: 'HEAD' })
+        .then(response => {
+          if (response.ok) {
+            window.location.href = '/';
+          } else {
+            setTimeout(checkIfAppIsReady, 2000);
+          }
+        })
+        .catch(() => {
+          setTimeout(checkIfAppIsReady, 2000);
+        });
+    }
+    
+    // Start checking after 5 seconds
+    setTimeout(checkIfAppIsReady, 5000);
+  </script>
+</body>
+</html> 

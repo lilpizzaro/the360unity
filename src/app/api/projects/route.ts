@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
 
+// This is needed to ensure the route is properly compiled
+export const dynamic = 'force-dynamic';
+
 // Define User type interface based on Clerk user structure
 interface ClerkUser {
   id?: string;
@@ -35,8 +38,14 @@ export async function GET(request: Request) {
   const category = searchParams.get("category");
   const search = searchParams.get("search");
   const technology = searchParams.get("technology");
+  const limit = searchParams.get("limit") ? parseInt(searchParams.get("limit") as string) : undefined;
   
   try {
+    // Get current user to check if they've starred projects
+    const user = await currentUser();
+    const userId = user?.id;
+    
+    // Get all projects
     let query = supabase
       .from('projects')
       .select('*');
@@ -54,6 +63,10 @@ export async function GET(request: Request) {
       query = query.or(`title.ilike.%${search}%,description.ilike.%${search}%,author_name.ilike.%${search}%`);
     }
     
+    if (limit) {
+      query = query.limit(limit);
+    }
+    
     const { data, error } = await query.order('created_at', { ascending: false });
     
     if (error) {
@@ -61,27 +74,46 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Failed to fetch projects" }, { status: 500 });
     }
     
+    // If user is signed in, get their starred projects
+    let userStars: Record<string, boolean> = {};
+    
+    if (userId) {
+      const { data: starredData, error: starredError } = await supabase
+        .from('project_likes')
+        .select('project_id')
+        .eq('user_id', userId);
+      
+      if (!starredError && starredData) {
+        userStars = starredData.reduce((acc: Record<string, boolean>, item) => {
+          acc[item.project_id] = true;
+          return acc;
+        }, {});
+      }
+    }
+    
     // Transform the data to match the expected format in the frontend
     const transformedData = data.map(project => ({
       id: project.id,
       title: project.title,
       description: project.description,
+      image: project.image_url,
       author: {
         id: project.author_id,
         name: project.author_name,
-        imageUrl: project.author_image_url || null // Ensure this is never undefined
+        avatar: project.author_image_url || null // Ensure this is never undefined
       },
       technologies: project.technologies || [],
-      repoUrl: project.repo_url,
-      demoUrl: project.demo_url,
+      githubUrl: project.repo_url,
+      liveUrl: project.demo_url,
       category: project.category,
       categoryName: project.category_name,
       status: project.status,
-      stars: project.stars,
-      forks: project.forks,
-      views: project.views,
+      stars: project.stars || 0,
+      isStarred: userId ? !!userStars[project.id] : false,
+      forks: project.forks || 0,
+      views: project.views || 0,
       createdAt: project.created_at,
-      featured: project.featured
+      featured: project.featured || false
     }));
     
     return NextResponse.json(transformedData);

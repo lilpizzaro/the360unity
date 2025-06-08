@@ -21,6 +21,8 @@ import {
   GraphQLIcon,
   CodeIcon
 } from "./icons";
+import StarButton from "./StarButton";
+import UserAvatar from "./UserAvatar";
 
 interface Technology {
   name: string;
@@ -40,6 +42,7 @@ export interface ProjectCardProps {
   liveUrl?: string;
   technologies: (Technology | string)[];
   stars: number;
+  isStarred?: boolean;
   featured?: boolean;
 }
 
@@ -53,6 +56,7 @@ export default function ProjectCard({
   liveUrl,
   technologies,
   stars,
+  isStarred = false,
   featured = false,
 }: ProjectCardProps) {
   const [isHovered, setIsHovered] = useState(false);
@@ -105,7 +109,7 @@ export default function ProjectCard({
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Project Image */}
-      <div className="relative h-48 overflow-hidden">
+      <div className="relative h-40 md:h-48 overflow-hidden">
         {image ? (
           <Image
             src={image}
@@ -126,28 +130,18 @@ export default function ProjectCard({
             Featured
           </div>
         )}
-        {stars > 0 && (
-          <div className="absolute top-2 right-2 bg-black/60 text-white text-xs font-medium py-1 px-2 rounded-full backdrop-blur-sm flex items-center gap-1">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-            </svg>
-            {stars}
-          </div>
-        )}
+        <div className="absolute top-2 right-2">
+          <StarButton 
+            projectId={id} 
+            initialStarCount={stars} 
+            isStarred={isStarred}
+            size="sm"
+          />
+        </div>
       </div>
 
       {/* Project Info */}
-      <div className="p-5">
+      <div className="p-3 md:p-5">
         <h3 className="font-semibold text-lg mb-1 text-white">{title}</h3>
         <p className="text-sm text-white/70 mb-3 line-clamp-2">{description}</p>
 
@@ -178,7 +172,7 @@ export default function ProjectCard({
         {/* View Project Button */}
         <Link
           href={`/projects/${id}`}
-          className="block w-full text-center mb-4 bg-cyan/20 border border-cyan/30 text-cyan rounded-lg py-2 hover:bg-cyan/30 transition-colors flex items-center justify-center gap-2"
+          className="block w-full text-center mb-4 bg-cyan/20 border border-cyan/30 text-cyan rounded-lg py-2 hover:bg-cyan/30 transition-colors flex items-center justify-center gap-2 min-h-[44px]"
         >
           <svg 
             xmlns="http://www.w3.org/2000/svg" 
@@ -200,19 +194,12 @@ export default function ProjectCard({
         {/* Author */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            {author?.avatar ? (
-              <Image
-                src={author.avatar}
-                alt={author.name || "User"}
-                width={24}
-                height={24}
-                className="rounded-full"
-              />
-            ) : (
-              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-xs">
-                {author?.name?.[0] || "U"}
-              </div>
-            )}
+            <UserAvatar 
+              src={author?.avatar} 
+              alt={author?.name || "User"} 
+              size="sm" 
+              fallbackText={author?.name || "User"}
+            />
             <span className="text-xs text-white/70">{author?.name || "User"}</span>
           </div>
 

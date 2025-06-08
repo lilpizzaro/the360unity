@@ -1,19 +1,21 @@
 import Image from "next/image";
 import Link from "next/link";
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
 import { RocketIcon, UserIcon, MessageCircleIcon, GlobeIcon, LightbulbIcon, GithubIcon, CodeIcon, ChevronDownIcon } from "@/components/icons";
+import { MenuIcon } from "lucide-react";
 
 export default async function Home() {
-  const { userId } = auth();
+  // Get the current user with the newer pattern
   const user = await currentUser();
+  const userId = user?.id;
   
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 p-6">
+      <header className="fixed top-0 left-0 right-0 z-50 px-4 py-3 sm:p-6">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           {/* Logo */}
-          <Link href="/" className="text-2xl font-bold text-white">
+          <Link href="/" className="text-xl sm:text-2xl font-bold text-white">
             THE360UNITY
           </Link>
 
@@ -26,8 +28,8 @@ export default async function Home() {
           </nav>
 
           {/* CTA Button & Mobile Menu */}
-          <div className="flex items-center space-x-4">
-            {/* User Button Placeholder - will be replaced with Clerk */}
+          <div className="flex items-center">
+            {/* User Button for Desktop */}
             <div className="hidden md:flex items-center space-x-4">
               {userId ? (
                 <>
@@ -50,10 +52,37 @@ export default async function Home() {
               )}
             </div>
 
-            {/* Mobile CTA */}
-            <Link href={userId ? "/dashboard" : "/sign-up"} className="btn-primary t-caption sm:hidden text-xs px-4 py-2">
-              {userId ? "Dashboard" : "Join"}
-            </Link>
+            {/* Mobile Navigation */}
+            <div className="flex items-center md:hidden">
+              {userId ? (
+                <div className="flex items-center space-x-2">
+                  <Link 
+                    href="/dashboard" 
+                    className="flex items-center justify-center px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-sm font-medium transition-colors"
+                  >
+                    Dashboard
+                  </Link>
+                  <div className="w-7 h-7 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full flex items-center justify-center text-xs font-bold">
+                    {user?.firstName?.[0] || user?.username?.[0] || "U"}
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center space-x-2">
+                  <Link 
+                    href="/sign-in" 
+                    className="px-3 py-1.5 text-sm font-medium text-white/80 hover:text-white transition-colors"
+                  >
+                    Sign In
+                  </Link>
+                  <Link 
+                    href="/sign-up" 
+                    className="px-3 py-1.5 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg text-sm font-medium text-white shadow-lg hover:opacity-90 transition-opacity"
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </header>
@@ -61,72 +90,9 @@ export default async function Home() {
       {/* Main Content */}
       <main>
         {/* Hero Section */}
-        <section id="start" className="section flex-col text-center relative overflow-hidden pt-24">
-          {/* Phone Mockups - Parallax Effect */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="relative">
-              {/* Phone 1 - Developer Portfolio */}
-              <div className="absolute transform -rotate-12 translate-x-[-200px] translate-y-[-50px] opacity-80 float-animation">
-                <div className="w-[200px] h-[400px] bg-black/20 rounded-[30px] border border-white/20 backdrop-blur-sm p-4">
-                  <div className="w-full h-full bg-gradient-to-b from-blue-500/20 to-purple-500/20 rounded-[20px] flex flex-col items-center justify-center text-xs">
-                    <div className="w-16 h-16 bg-white/20 rounded-full mb-4 flex items-center justify-center">
-                      <UserIcon size={32} className="text-white" />
-                    </div>
-                    <div className="text-white/80 text-center">
-                      <div className="font-semibold">Developer Profile</div>
-                      <div className="text-xs opacity-70">Full Stack Dev</div>
-                      <div className="mt-2 text-xs">React • Node.js • Python</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Phone 2 - Project Showcase */}
-              <div className="absolute transform rotate-12 translate-x-[200px] translate-y-[50px] opacity-80 float-animation-delay-2">
-                <div className="w-[200px] h-[400px] bg-black/20 rounded-[30px] border border-white/20 backdrop-blur-sm p-4">
-                  <div className="w-full h-full bg-gradient-to-b from-green-500/20 to-blue-500/20 rounded-[20px] flex flex-col items-center justify-center text-xs">
-                    <div className="w-16 h-16 bg-white/20 rounded-lg mb-4 flex items-center justify-center">
-                      <RocketIcon size={32} className="text-white" />
-                    </div>
-                    <div className="text-white/80 text-center">
-                      <div className="font-semibold">AI Chat App</div>
-                      <div className="text-xs opacity-70">⭐ 1.2k stars</div>
-                      <div className="mt-2 text-xs">Next.js • OpenAI • TypeScript</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Phone 3 - Community Chat */}
-              <div className="transform translate-y-[20px] float-animation-delay-1">
-                <div className="w-[220px] h-[440px] bg-black/20 rounded-[35px] border border-white/20 backdrop-blur-sm p-5">
-                  <div className="w-full h-full bg-gradient-to-b from-purple-500/20 to-pink-500/20 rounded-[25px] flex flex-col items-center justify-center text-sm">
-                    <div className="w-20 h-20 bg-white/20 rounded-full mb-6 flex items-center justify-center text-2xl">
-                      <MessageCircleIcon size={40} className="text-white" />
-                    </div>
-                    <div className="text-white/80 text-center">
-                      <div className="font-semibold">Dev Community</div>
-                      <div className="text-xs opacity-70 mt-1">5.2k active developers</div>
-                      <div className="mt-4 text-xs">
-                        <div className="mb-1 flex items-center justify-center gap-1">
-                          <RocketIcon size={14} className="text-white" /> React Best Practices
-                        </div>
-                        <div className="mb-1 flex items-center justify-center gap-1">
-                          <LightbulbIcon size={14} className="text-white" /> Code Review Circle
-                        </div>
-                        <div className="flex items-center justify-center gap-1">
-                          <GithubIcon size={14} className="text-white" /> Startup Projects
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
+        <section id="start" className="section flex-col text-center relative overflow-hidden pt-20 sm:pt-24">
           {/* Hero Text */}
-          <div className="relative z-10 max-w-4xl mx-auto">
+          <div className="relative z-10 max-w-4xl mx-auto px-4">
             <h1 className="t-heading-xl animate-text mb-8">
               Connect with
               <br />
@@ -139,7 +105,7 @@ export default async function Home() {
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
-                <Link href={userId ? "/dashboard" : "/sign-up"} className="btn-primary text-base px-8 py-3">
+                <Link href={userId ? "/dashboard" : "/sign-up"} className="btn-primary text-base px-8 py-3 w-full sm:w-auto">
                   {userId ? "Go to Dashboard" : "Join the platform"}
                 </Link>
                 <span className="text-white/70">or</span>
@@ -151,7 +117,7 @@ export default async function Home() {
           </div>
 
           {/* Scroll indicator */}
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 fade-in">
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 fade-in md:hidden">
             <Link href="#what" className="btn-circle">
               <ChevronDownIcon size={16} />
             </Link>

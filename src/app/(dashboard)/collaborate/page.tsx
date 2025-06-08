@@ -205,61 +205,61 @@ export default function CollaboratePage() {
   return (
     <>
       <DashboardNav />
-      <div className="min-h-screen pt-24 px-6">
+      <div className="min-h-screen pt-24 px-4 md:px-6 pb-20 md:pb-6">
         <div className="max-w-7xl mx-auto">
-          <div className="mb-8">
-            <h1 className="t-heading-lg mb-4">Collaborate</h1>
-            <p className="t-lg opacity-80">
+          <div className="mb-6 md:mb-8">
+            <h1 className="t-heading-lg mb-2 md:mb-4">Collaborate</h1>
+            <p className="t-md md:t-lg opacity-80">
               Work together with other developers in real-time on projects and code.
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid lg:grid-cols-3 gap-4 md:gap-8">
             {/* Left Column - Code Collaboration */}
             <div className="lg:col-span-2">
-              <div className="bg-white/5 rounded-2xl p-6 backdrop-blur-sm border border-white/10 mb-8">
-                <h2 className="t-heading-md mb-6">Code Collaboration</h2>
+              <div className="bg-white/5 rounded-xl md:rounded-2xl p-4 md:p-6 backdrop-blur-sm border border-white/10 mb-4 md:mb-8">
+                <h2 className="t-heading-sm md:t-heading-md mb-4 md:mb-6">Code Collaboration</h2>
                 <CodeCollaboration />
               </div>
               
               {/* Collaboration Tool Content Area */}
               {activeCollabTool && (
-                <div className="bg-white/5 rounded-2xl p-6 backdrop-blur-sm border border-white/10 mb-8">
+                <div className="bg-white/5 rounded-xl md:rounded-2xl p-4 md:p-6 backdrop-blur-sm border border-white/10 mb-4 md:mb-8">
                   {renderCollabToolContent()}
                 </div>
               )}
             </div>
 
             {/* Right Column - Collaboration Tools */}
-            <div className="space-y-6">
-              <div className="bg-white/5 rounded-2xl p-6 backdrop-blur-sm border border-white/10">
-                <h2 className="t-heading-sm mb-6">Collaboration Tools</h2>
-                <div className="space-y-4">
+            <div className="space-y-4 md:space-y-6">
+              <div className="bg-white/5 rounded-xl md:rounded-2xl p-4 md:p-6 backdrop-blur-sm border border-white/10">
+                <h2 className="t-heading-sm mb-4 md:mb-6">Collaboration Tools</h2>
+                <div className="grid grid-cols-1 md:grid-cols-1 gap-3 md:space-y-4">
                   <button 
-                    className="w-full text-left p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors"
+                    className="w-full text-left p-3 md:p-4 bg-white/5 rounded-lg md:rounded-xl hover:bg-white/10 transition-colors"
                     onClick={() => setActiveCollabTool("whiteboard")}
                   >
-                    <div className="flex items-center">
-                      <span className="text-2xl mr-3">
+                    <div className="flex items-start">
+                      <span className="text-xl md:text-2xl mr-3 mt-0.5">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                           <line x1="3" y1="9" x2="21" y2="9"></line>
                           <line x1="9" y1="21" x2="9" y2="9"></line>
                         </svg>
                       </span>
-                      <div>
+                      <div className="text-left">
                         <div className="font-semibold">Whiteboard</div>
-                        <div className="text-sm opacity-70">Visual brainstorming</div>
+                        <div className="text-xs md:text-sm opacity-70">Visual brainstorming</div>
                       </div>
                     </div>
                   </button>
 
                   <button 
-                    className="w-full text-left p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors"
+                    className="w-full text-left p-3 md:p-4 bg-white/5 rounded-lg md:rounded-xl hover:bg-white/10 transition-colors"
                     onClick={() => setActiveCollabTool("notes")}
                   >
-                    <div className="flex items-center">
-                      <span className="text-2xl mr-3">
+                    <div className="flex items-start">
+                      <span className="text-xl md:text-2xl mr-3 mt-0.5">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                           <polyline points="14 2 14 8 20 8"></polyline>
@@ -268,40 +268,40 @@ export default function CollaboratePage() {
                           <line x1="10" y1="9" x2="8" y2="9"></line>
                         </svg>
                       </span>
-                      <div>
+                      <div className="text-left">
                         <div className="font-semibold">Shared Notes</div>
-                        <div className="text-sm opacity-70">Collaborative documentation</div>
+                        <div className="text-xs md:text-sm opacity-70">Collaborative documentation</div>
                       </div>
                     </div>
                   </button>
 
                   <button 
-                    className="w-full text-left p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors"
+                    className="w-full text-left p-3 md:p-4 bg-white/5 rounded-lg md:rounded-xl hover:bg-white/10 transition-colors"
                     onClick={() => setActiveCollabTool("screen")}
                   >
-                    <div className="flex items-center">
-                      <span className="text-2xl mr-3">
+                    <div className="flex items-start">
+                      <span className="text-xl md:text-2xl mr-3 mt-0.5">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
                           <line x1="8" y1="21" x2="16" y2="21"></line>
                           <line x1="12" y1="17" x2="12" y2="21"></line>
                         </svg>
                       </span>
-                      <div>
+                      <div className="text-left">
                         <div className="font-semibold">Screen Sharing</div>
-                        <div className="text-sm opacity-70">Show your work in real-time</div>
+                        <div className="text-xs md:text-sm opacity-70">Show your work in real-time</div>
                       </div>
                     </div>
                   </button>
                 </div>
               </div>
 
-              <div className="bg-white/5 rounded-2xl p-6 backdrop-blur-sm border border-white/10">
-                <h2 className="t-heading-sm mb-6">Recent Collaborations</h2>
-                <div className="space-y-3">
+              <div className="bg-white/5 rounded-xl md:rounded-2xl p-4 md:p-6 backdrop-blur-sm border border-white/10">
+                <h2 className="t-heading-sm mb-4 md:mb-6">Recent Collaborations</h2>
+                <div className="grid grid-cols-1 gap-3 md:space-y-3">
                   <div className="p-3 bg-white/5 rounded-lg">
                     <div className="flex items-center justify-between mb-2">
-                      <div className="font-medium">React Component Review</div>
+                      <div className="font-medium text-sm md:text-base">React Component Review</div>
                       <span className="text-xs opacity-70">2h ago</span>
                     </div>
                     <div className="flex items-center text-xs">
@@ -319,7 +319,7 @@ export default function CollaboratePage() {
 
                   <div className="p-3 bg-white/5 rounded-lg">
                     <div className="flex items-center justify-between mb-2">
-                      <div className="font-medium">API Integration Session</div>
+                      <div className="font-medium text-sm md:text-base">API Integration Session</div>
                       <span className="text-xs opacity-70">1d ago</span>
                     </div>
                     <div className="flex items-center text-xs">
@@ -334,7 +334,7 @@ export default function CollaboratePage() {
 
                   <div className="p-3 bg-white/5 rounded-lg">
                     <div className="flex items-center justify-between mb-2">
-                      <div className="font-medium">Bug Fix Pair Programming</div>
+                      <div className="font-medium text-sm md:text-base">Bug Fix Pair Programming</div>
                       <span className="text-xs opacity-70">3d ago</span>
                     </div>
                     <div className="flex items-center text-xs">
