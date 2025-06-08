@@ -12,20 +12,20 @@ interface ProjectFilesProps {
 }
 
 export default function ProjectFiles({ project, isOwner = false }: ProjectFilesProps) {
-  const [files, setFiles] = useState<string[]>(project.files || []);
+  const [files, setFiles] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (project?.files?.length > 0) {
+    if (typeof window !== 'undefined' && project?.files?.length > 0) {
       setFiles(project.files);
-    } else if (project?.id) {
+    } else if (typeof window !== 'undefined' && project?.id) {
       fetchProjectFiles();
     }
   }, [project?.id, project?.files]);
 
   const fetchProjectFiles = async () => {
-    if (!project?.id) return;
+    if (!project?.id || typeof window === 'undefined') return;
     
     setLoading(true);
     setError(null);

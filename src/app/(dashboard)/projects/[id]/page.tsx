@@ -55,18 +55,55 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   const user = await currentUser();
   const projectId = params.id;
   
-  // Fetch project data server-side
-  const { data: project, error } = await supabase
-    .from('projects')
-    .select('*')
-    .eq('id', projectId)
-    .single();
+  let project;
+  let error;
   
-  // Increment view count
-  await supabase
-    .from('projects')
-    .update({ views: (project?.views || 0) + 1 })
-    .eq('id', projectId);
+  // Detect if we're in build mode
+  const isBuildTime = process.env.NODE_ENV === 'production' && process.env.NEXT_PHASE === 'phase-production-build';
+  
+  if (isBuildTime) {
+    // During build time, return a placeholder project to avoid Supabase Realtime errors
+    project = {
+      id: parseInt(projectId),
+      title: "Project Title",
+      description: "Project description will be loaded at runtime.",
+      author_id: "",
+      author_name: "Author",
+      technologies: ["React"],
+      repo_url: "",
+      demo_url: "",
+      category: "",
+      category_name: "Category",
+      status: "active",
+      created_at: new Date().toISOString(),
+      files: [],
+      views: 0
+    };
+  } else {
+    // Only fetch from Supabase during runtime
+    try {
+      // Fetch project data server-side
+      const { data, error: fetchError } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('id', projectId)
+        .single();
+      
+      project = data;
+      error = fetchError;
+      
+      // Increment view count
+      if (project) {
+        await supabase
+          .from('projects')
+          .update({ views: (project?.views || 0) + 1 })
+          .eq('id', projectId);
+      }
+    } catch (err) {
+      console.error("Error fetching project:", err);
+      error = { message: "Failed to fetch project data" };
+    }
+  }
   
   // Check if user is the project owner
   const isOwner = userId === project?.author_id;

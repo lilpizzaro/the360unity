@@ -9,13 +9,17 @@ const supabaseServiceRoleKey = process.env.SUPABASE_KEY || '';
 const isServer = typeof window === 'undefined';
 const supabaseKey = isServer ? supabaseServiceRoleKey : supabaseAnonKey;
 
-// Create Supabase client
+// Detect if we're in build mode (Next.js static optimization)
+const isBuildTime = process.env.NODE_ENV === 'production' && process.env.NEXT_PHASE === 'phase-production-build';
+
+// Create Supabase client with conditional Realtime config
 export const supabase = createClient(supabaseUrl, supabaseKey, {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
   },
-  realtime: {
+  // Disable Realtime during build to avoid the constructor error
+  realtime: isBuildTime ? false : {
     params: {
       eventsPerSecond: 10,
     },
