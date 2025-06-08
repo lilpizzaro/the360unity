@@ -12,6 +12,7 @@
     "start": "cross-env NODE_ENV=production node server.js",
     "start:prod": "cross-env NODE_ENV=production node server.js",
     "render-build": "node render-build.js",
+    "postinstall": "npm install express cross-env --no-save",
     "lint": "bunx biome lint --write && bunx tsc --noEmit",
     "format": "bunx biome format --write"
   },
