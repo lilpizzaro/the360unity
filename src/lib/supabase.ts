@@ -9,39 +9,22 @@ const supabaseServiceRoleKey = process.env.SUPABASE_KEY || '';
 const isServer = typeof window === 'undefined';
 const supabaseKey = isServer ? supabaseServiceRoleKey : supabaseAnonKey;
 
-// Detect if we're in production
-const isProduction = process.env.NODE_ENV === 'production';
+// Detect if we're in build mode (Next.js static optimization)
+const isBuildTime = process.env.NODE_ENV === 'production' && process.env.NEXT_PHASE === 'phase-production-build';
 
 // Create Supabase client with conditional Realtime config
-let supabase;
-
-try {
-  // Try to create client with realtime enabled
-  supabase = createClient(supabaseUrl, supabaseKey, {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
+export const supabase = createClient(supabaseUrl, supabaseKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+  },
+  // Disable Realtime during build to avoid the constructor error
+  realtime: isBuildTime ? false : {
+    params: {
+      eventsPerSecond: 10,
     },
-    realtime: {
-      params: {
-        eventsPerSecond: 10,
-      },
-    },
-  });
-} catch (error) {
-  console.error('Error creating Supabase client with realtime:', error);
-  
-  // Fallback to client without realtime
-  supabase = createClient(supabaseUrl, supabaseKey, {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-    },
-    realtime: false,
-  });
-}
-
-export { supabase };
+  },
+});
 
 // Storage configuration from environment variables
 export const storageConfig = {
