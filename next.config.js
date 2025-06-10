@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  devIndicators: false, 
   reactStrictMode: true,
   images: {
     domains: [
@@ -15,6 +16,7 @@ const nextConfig = {
   },
   experimental: {
     // serverComponentsExternalPackages has been moved to serverExternalPackages
+    reactDevOverlay: false,
   },
   serverExternalPackages: ['@prisma/client', 'bcrypt'],
   typescript: {
@@ -34,6 +36,8 @@ const nextConfig = {
     // Suppress warnings about critical dependencies in Supabase's Realtime client
     config.ignoreWarnings = [
       { module: /node_modules\/@supabase\/realtime-js\/dist\/main\/RealtimeClient\.js/ },
+      // Ignore all warnings
+      /./,
     ];
 
     if (isServer) {
@@ -63,9 +67,7 @@ const nextConfig = {
 // Suppress console warnings in production
 if (process.env.NODE_ENV === 'production') {
   nextConfig.compiler = {
-    removeConsole: {
-      exclude: ['error'],
-    },
+    removeConsole: true, // Remove ALL console logs in production
   };
 }
 
