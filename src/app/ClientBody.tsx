@@ -2,6 +2,8 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
+import { disableReactDevTools } from "@/lib/disableDevTools";
+import { disableNextDevTools } from "@/lib/disableNextDevTools";
 
 // Create a separate component that uses searchParams
 function SearchParamsWatcher({ setIsChangingRoute }: { setIsChangingRoute: (value: boolean) => void }) {
@@ -26,6 +28,11 @@ export default function ClientBody({
 }) {
   const pathname = usePathname();
   const [isChangingRoute, setIsChangingRoute] = useState(false);
+
+  // Disable React DevTools in production
+  useEffect(() => {
+    disableReactDevTools();
+  }, []);
 
   // Remove any extension-added attributes during hydration
   useEffect(() => {
