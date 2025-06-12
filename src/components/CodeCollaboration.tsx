@@ -492,6 +492,93 @@ function example() {
     const newLanguage = e.target.value;
     setLanguage(newLanguage);
     
+    // Set default code template for the selected language
+    const defaultTemplates: Record<string, string> = {
+      javascript: `// JavaScript Example
+function greet(name) {
+  return \`Hello, \${name}!\`;
+}
+
+console.log(greet("World"));`,
+      python: `# Python Example
+def greet(name):
+    return f"Hello, {name}!"
+
+print(greet("World"))`,
+      typescript: `// TypeScript Example
+function greet(name: string): string {
+  return \`Hello, \${name}!\`;
+}
+
+console.log(greet("World"));`,
+      java: `// Java Example
+public class Main {
+    public static void main(String[] args) {
+        System.out.println(greet("World"));
+    }
+    
+    public static String greet(String name) {
+        return "Hello, " + name + "!";
+    }
+}`,
+      c: `// C Example
+#include <stdio.h>
+
+char* greet(char* name) {
+    static char greeting[100];
+    sprintf(greeting, "Hello, %s!", name);
+    return greeting;
+}
+
+int main() {
+    printf("%s\\n", greet("World"));
+    return 0;
+}`,
+      cpp: `// C++ Example
+#include <iostream>
+#include <string>
+
+std::string greet(const std::string& name) {
+    return "Hello, " + name + "!";
+}
+
+int main() {
+    std::cout << greet("World") << std::endl;
+    return 0;
+}`,
+      ruby: `# Ruby Example
+def greet(name)
+  "Hello, #{name}!"
+end
+
+puts greet("World")`,
+      go: `// Go Example
+package main
+
+import "fmt"
+
+func greet(name string) string {
+    return fmt.Sprintf("Hello, %s!", name)
+}
+
+func main() {
+    fmt.Println(greet("World"))
+}`,
+      php: `<?php
+// PHP Example
+function greet($name) {
+    return "Hello, " . $name . "!";
+}
+
+echo greet("World");
+?>`
+    };
+    
+    // Ask if user wants to update code template
+    if (defaultTemplates[newLanguage] && confirm(`Do you want to update the code to a ${newLanguage} example?`)) {
+      setCode(defaultTemplates[newLanguage]);
+    }
+    
     // Add a system message about the language change
     const systemMessage = {
       user: "System",
@@ -626,59 +713,108 @@ function example() {
   };
 
   // Run code function
-  const handleRunCode = () => {
+  const handleRunCode = async () => {
     setIsRunning(true);
+    setOutputResult("Running code...");
     
-    setTimeout(() => {
-      try {
-        let result = "";
-        
-        // For demo purposes, we'll just execute JavaScript code safely with Function
-        if (language === "javascript") {
-          try {
-            // Use a sandboxed approach to run code
-            // This is just a simplified example - a real implementation would use a more secure approach
-            const consoleOutput: string[] = [];
-            const sandbox = {
-              console: {
-                log: (...args: any[]) => {
-                  consoleOutput.push(args.map(arg => 
-                    typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
-                  ).join(' '));
-                }
+    try {
+      let result = "";
+      
+      // For JavaScript, we can still run it client-side for better performance
+      if (language === "javascript" && typeof window !== 'undefined') {
+        try {
+          // Use a sandboxed approach to run code
+          const consoleOutput: string[] = [];
+          const sandbox = {
+            console: {
+              log: (...args: any[]) => {
+                consoleOutput.push(args.map(arg => 
+                  typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
+                ).join(' '));
               }
-            };
-            
-            // Very basic sandboxing - not secure for production
-            const sandboxedCode = `
-              "use strict";
-              ${code}
-            `;
-            
-            // Execute in sandbox
-            new Function('console', sandboxedCode)(sandbox.console);
-            
-            result = consoleOutput.map(line => `> ${line}`).join('\n');
-          } catch (jsError) {
-            throw new Error(`JavaScript error: ${jsError}`);
-          }
-        } else {
-          // For other languages, just show a placeholder
-          result = `[This is a demo. In a real implementation, ${language} code would be executed on the server]`;
+            }
+          };
+          
+          // Very basic sandboxing
+          const sandboxedCode = `
+            "use strict";
+            ${code}
+          `;
+          
+          // Execute in sandbox
+          new Function('console', sandboxedCode)(sandbox.console);
+          
+          result = consoleOutput.map(line => `> ${line}`).join('\n');
+        } catch (jsError) {
+          throw new Error(`JavaScript error: ${jsError}`);
         }
+      } else {
+        // For all other languages, use the server-side API
+        try {
+          const response = await fetch('/api/execute-code', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ code, language }),
+          });
+          
+          if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+          }
+          
+          const data = await response.json();
+          
+          if (data.error) {
+            throw new Error(data.error);
+          }
+          
+          result = data.output || "Code executed successfully with no output";
+        } catch (apiError) {
+          throw new Error(`Execution error: ${apiError.message}`);
+        }
+      }
+      
+      setOutputResult(result || "No output");
+      
+      // Add a system message about the code execution
+      const systemMessage = {
+        user: "System",
+        message: "Code executed",
+        timestamp: new Date()
+      };
+      
+      setChatMessages(prev => [...prev, systemMessage]);
+      
+      // Add system message to database
+      if (isCollaborating && roomId) {
+        supabase
+          .from('collab_messages')
+          .insert({
+            room_id: roomId,
+            user_id: 'system',
+            username: 'System',
+            message: "Code executed",
+            created_at: new Date().toISOString()
+          })
+          .then(({ error }) => {
+            if (error) console.error("Error saving execution message:", error);
+          });
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        setOutputResult(`Error: ${error.message}`);
         
-        setOutputResult(result || "No output");
-        
-        // Add a system message about the code execution
-        const systemMessage = {
+        // Add system message about the error
+        const errorMessage = {
           user: "System",
-          message: "Code executed",
+          message: `Error running code: ${error.message}`,
           timestamp: new Date()
         };
         
-        setChatMessages(prev => [...prev, systemMessage]);
+        setChatMessages(prev => [...prev, errorMessage]);
         
-        // Add system message to database
+        // Add error message to database
         if (isCollaborating && roomId) {
           supabase
             .from('collab_messages')
@@ -686,48 +822,19 @@ function example() {
               room_id: roomId,
               user_id: 'system',
               username: 'System',
-              message: "Code executed",
+              message: `Error running code: ${error.message}`,
               created_at: new Date().toISOString()
             })
-            .then(({ error }) => {
-              if (error) console.error("Error saving execution message:", error);
+            .then(({ error: dbError }) => {
+              if (dbError) console.error("Error saving error message:", dbError);
             });
         }
-      } catch (error) {
-        if (error instanceof Error) {
-          setOutputResult(`Error: ${error.message}`);
-          
-          // Add system message about the error
-          const errorMessage = {
-            user: "System",
-            message: `Error running code: ${error.message}`,
-            timestamp: new Date()
-          };
-          
-          setChatMessages(prev => [...prev, errorMessage]);
-          
-          // Add error message to database
-          if (isCollaborating && roomId) {
-            supabase
-              .from('collab_messages')
-              .insert({
-                room_id: roomId,
-                user_id: 'system',
-                username: 'System',
-                message: `Error running code: ${error.message}`,
-                created_at: new Date().toISOString()
-              })
-              .then(({ error: dbError }) => {
-                if (dbError) console.error("Error saving error message:", dbError);
-              });
-          }
-        } else {
-          setOutputResult("An unknown error occurred");
-        }
+      } else {
+        setOutputResult("An unknown error occurred");
       }
-      
+    } finally {
       setIsRunning(false);
-    }, 500);
+    }
   };
 
   // Format code function
@@ -974,10 +1081,11 @@ function example() {
                 <option value="python">Python</option>
                 <option value="typescript">TypeScript</option>
                 <option value="java">Java</option>
-                <option value="csharp">C#</option>
+                <option value="c">C</option>
                 <option value="cpp">C++</option>
+                <option value="ruby">Ruby</option>
                 <option value="go">Go</option>
-                <option value="rust">Rust</option>
+                <option value="php">PHP</option>
               </select>
               <button
                 onClick={handleLeaveRoom}
@@ -1075,7 +1183,7 @@ function example() {
             <div className="bg-white/5 rounded-lg p-4 border border-white/10">
               <h4 className="text-sm font-medium mb-2">Output</h4>
               <div className="h-[9.5rem] bg-black/20 rounded p-2 font-mono text-xs text-green-400 overflow-auto whitespace-pre-line">
-                {outputResult || (language === "javascript" ? "> Run your code to see output here" : `[${language} code execution requires server-side implementation]`)}
+                {outputResult || (language === "javascript" ? "> Run your code to see output here" : `> Run your ${language} code using the Run button above`)}
               </div>
             </div>
           </div>
